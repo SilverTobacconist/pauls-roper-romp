@@ -20,7 +20,7 @@ function ActivityLayout({
 
         <Link
           className="activity-page__home"
-          to="/?view=menu"
+          to="/"
           aria-label="Return to the homepage"
         >
           <Home aria-hidden="true" size={22} />

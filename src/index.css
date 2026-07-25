@@ -760,8 +760,13 @@ img {
 
 .activity-page {
   position: relative;
+  width: 100%;
+  height: 100vh;
   min-height: 100vh;
   overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
   background:
     linear-gradient(
       rgba(24, 11, 6, 0.84),
@@ -939,5 +944,346 @@ img {
 
   .activity-page__content {
     padding-top: 48px;
+  }
+}
+
+/* =========================================================
+   STANLEY'S RENT CALCULATOR
+   ========================================================= */
+
+.rent-calculator {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(290px, 0.75fr);
+  gap: 26px;
+  text-align: left;
+}
+
+.rent-calculator__controls,
+.rent-receipt {
+  border: 1px solid rgba(255, 244, 214, 0.22);
+  border-radius: 20px;
+}
+
+.rent-calculator__controls {
+  padding: clamp(22px, 4vw, 36px);
+  background: rgba(35, 16, 8, 0.48);
+}
+
+.rent-section-heading__eyebrow {
+  margin: 0 0 8px;
+  color: var(--mustard-light);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rent-section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.45rem);
+  line-height: 1.05;
+}
+
+.rent-section-heading > p:last-child {
+  margin: 14px 0 0;
+  color: var(--cream-muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.rent-counter-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.rent-counter {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid rgba(255, 244, 214, 0.16);
+  border-radius: 14px;
+  padding: 15px 16px;
+  background: rgba(89, 47, 22, 0.32);
+}
+
+.rent-counter__copy h3 {
+  margin: 0;
+  font-size: 1.06rem;
+}
+
+.rent-counter__copy p {
+  margin: 5px 0 0;
+  color: var(--cream-muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.rent-counter__buttons {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: 38px 38px 38px;
+  align-items: center;
+  border: 1px solid rgba(255, 226, 155, 0.3);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(29, 12, 6, 0.68);
+}
+
+.rent-counter__buttons button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--mustard-light);
+  cursor: pointer;
+}
+
+.rent-counter__buttons button:hover:not(:disabled),
+.rent-counter__buttons button:focus-visible:not(:disabled) {
+  background: rgba(220, 166, 60, 0.17);
+}
+
+.rent-counter__buttons button:disabled {
+  cursor: not-allowed;
+  opacity: 0.28;
+}
+
+.rent-counter__buttons span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.rent-checkbox-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.rent-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid rgba(255, 244, 214, 0.15);
+  border-radius: 13px;
+  padding: 14px;
+  background: rgba(29, 12, 6, 0.35);
+  cursor: pointer;
+}
+
+.rent-checkbox:hover {
+  border-color: rgba(255, 226, 155, 0.42);
+}
+
+.rent-checkbox input {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  margin: 2px 0 0;
+  accent-color: var(--mustard);
+}
+
+.rent-checkbox span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rent-checkbox strong {
+  font-size: 0.94rem;
+}
+
+.rent-checkbox small {
+  color: var(--cream-muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.rent-receipt {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  padding: 24px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 244, 214, 0.98),
+      rgba(231, 210, 169, 0.98)
+    );
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.38),
+    inset 0 1px rgba(255, 255, 255, 0.7);
+  color: #3c2115;
+  text-shadow: none;
+}
+
+.rent-receipt__heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border-bottom: 2px dashed rgba(60, 33, 21, 0.28);
+  padding-bottom: 18px;
+}
+
+.rent-receipt__heading p {
+  margin: 0;
+  color: #7c4a29;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rent-receipt__heading h2 {
+  margin: 3px 0 0;
+  font-size: 1.45rem;
+}
+
+.rent-receipt__line-items {
+  display: grid;
+  gap: 10px;
+  padding: 20px 0;
+  border-bottom: 2px dashed rgba(60, 33, 21, 0.28);
+}
+
+.rent-receipt__line {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.rent-receipt__line span {
+  max-width: 70%;
+}
+
+.rent-receipt__line strong {
+  flex-shrink: 0;
+}
+
+.rent-receipt__discount {
+  color: #4d6a31;
+}
+
+.rent-receipt__total {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 0 18px;
+}
+
+.rent-receipt__total span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rent-receipt__total strong {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.9;
+}
+
+.rent-verdict {
+  border-radius: 13px;
+  padding: 16px;
+  background: rgba(81, 36, 19, 0.1);
+}
+
+.rent-verdict p {
+  margin: 0;
+  color: #8a4c28;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.rent-verdict h3 {
+  margin: 6px 0 0;
+  font-size: 1.3rem;
+}
+
+.rent-verdict span {
+  display: block;
+  margin-top: 7px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.rent-reset-button {
+  display: inline-flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  border: 1px solid rgba(60, 33, 21, 0.42);
+  border-radius: 999px;
+  background: transparent;
+  color: #3c2115;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.rent-reset-button:hover,
+.rent-reset-button:focus-visible {
+  background: rgba(81, 36, 19, 0.1);
+}
+
+@media (max-width: 850px) {
+  .rent-calculator {
+    grid-template-columns: 1fr;
+  }
+
+  .rent-receipt {
+    position: relative;
+    top: auto;
+    width: min(100%, 520px);
+    justify-self: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .rent-calculator__controls {
+    padding: 18px 14px;
+  }
+
+  .rent-counter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rent-counter__buttons {
+    align-self: stretch;
+    grid-template-columns: 44px 1fr 44px;
+  }
+
+  .rent-counter__buttons button {
+    width: 44px;
+  }
+
+  .rent-receipt {
+    padding: 20px 17px;
   }
 }
