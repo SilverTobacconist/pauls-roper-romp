@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 
 import ActivityLayout from '../../layouts/ActivityLayout'
+import ApprovedReviews from '../../components/ApprovedReviews'
 import { submitRopersReview } from '../../lib/submitRopersReview'
 
 const REVIEW_TARGETS = [
@@ -482,6 +483,7 @@ function ReviewsPage() {
           </button>
         </aside>
       </div>
+            <ApprovedReviews />
     </ActivityLayout>
   )
 }
