@@ -731,3 +731,213 @@ img {
 .apartment-scene > .opening-message {
   z-index: 10;
 }
+
+/* =========================================================
+   ACTIVITY CARD LINKS
+   ========================================================= */
+
+.activity-menu__card {
+  text-decoration: none;
+}
+
+.activity-menu__icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 226, 155, 0.44);
+  border-radius: 50%;
+  background: rgba(42, 18, 8, 0.28);
+  color: #ffe29b;
+}
+
+/* =========================================================
+   ACTIVITY PAGES
+   ========================================================= */
+
+.activity-page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    linear-gradient(
+      rgba(24, 11, 6, 0.84),
+      rgba(24, 11, 6, 0.92)
+    ),
+    url('./assets/retro-wallpaper-pattern.png');
+  background-position: center;
+  background-size: 600px;
+  color: var(--cream);
+}
+
+.activity-page__background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 50% 10%,
+      rgba(220, 166, 60, 0.16),
+      transparent 36rem
+    ),
+    linear-gradient(
+      90deg,
+      rgba(23, 10, 5, 0.74),
+      transparent 32%,
+      transparent 68%,
+      rgba(23, 10, 5, 0.74)
+    );
+}
+
+.activity-page__header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: min(1180px, 92%);
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(255, 244, 214, 0.2);
+}
+
+.activity-page__back,
+.activity-page__home {
+  display: inline-flex;
+  align-items: center;
+  color: var(--cream);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.activity-page__back {
+  gap: 9px;
+  font-size: 0.88rem;
+}
+
+.activity-page__home {
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 244, 214, 0.36);
+  border-radius: 50%;
+  background: rgba(36, 17, 9, 0.58);
+}
+
+.activity-page__back:hover,
+.activity-page__home:hover {
+  color: var(--mustard-light);
+}
+
+.activity-page__content {
+  position: relative;
+  z-index: 2;
+  width: min(900px, 92%);
+  margin: 0 auto;
+  padding: 70px 0 90px;
+  text-align: center;
+}
+
+.activity-page__icon {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  margin: 0 auto 24px;
+  border: 1px solid rgba(255, 226, 155, 0.46);
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(220, 166, 60, 0.28),
+      rgba(81, 36, 19, 0.62)
+    );
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.34),
+    inset 0 1px rgba(255, 255, 255, 0.14);
+  color: var(--mustard-light);
+}
+
+.activity-page__eyebrow {
+  margin: 0 0 14px;
+  color: var(--mustard-light);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.activity-page__content h1 {
+  margin: 0;
+  font-size: clamp(2.8rem, 7vw, 5.7rem);
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+}
+
+.activity-page__description {
+  max-width: 680px;
+  margin: 24px auto 0;
+  color: var(--cream-muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 2vw, 1.16rem);
+  line-height: 1.65;
+}
+
+.activity-page__panel {
+  margin-top: 42px;
+  border: 1px solid rgba(255, 244, 214, 0.3);
+  border-radius: 22px;
+  padding: clamp(28px, 5vw, 54px);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(95, 43, 20, 0.86),
+      rgba(42, 18, 9, 0.92)
+    );
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.42),
+    inset 0 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.activity-placeholder__label {
+  margin: 0 0 12px;
+  color: var(--mustard-light);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.activity-placeholder h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.activity-placeholder > p:last-child {
+  max-width: 620px;
+  margin: 18px auto 0;
+  color: var(--cream-muted);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.65;
+}
+
+@media (max-width: 520px) {
+  .activity-page__header {
+    min-height: 68px;
+  }
+
+  .activity-page__back {
+    font-size: 0.78rem;
+  }
+
+  .activity-page__content {
+    padding-top: 48px;
+  }
+}

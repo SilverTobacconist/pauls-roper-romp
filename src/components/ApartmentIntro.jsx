@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 
+import {
+  Calculator,
+  Ear,
+  MessageSquareText,
+  ScrollText,
+} from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+
 import apartmentExterior from '../assets/hero-apartment-exterior.png'
 import apartmentInterior from '../assets/hero-apartment-interior.png'
 import closedDoor from '../assets/door-201-closed.png'
@@ -17,29 +25,46 @@ const activities = [
     description:
       'Write a wildly inaccurate review of a drink, outfit, business, or anything else you barely observed.',
     accent: 'orange',
+    path: '/reviews',
+    icon: MessageSquareText,
   },
   {
     title: 'What Did Mr. Roper Hear?',
     description:
       'Listen to the previous recording, type what you heard, and record the next misunderstanding.',
     accent: 'mustard',
+    path: '/mr-roper-heard',
+    icon: Ear,
   },
   {
     title: 'Lost Scripts',
     description:
       'Supply the missing words and create a disastrous lost episode of Three’s Company.',
     accent: 'green',
+    path: '/lost-scripts',
+    icon: ScrollText,
   },
   {
     title: 'Stanley’s Rent Calculator',
     description:
       'Calculate rent after parties, broken lamps, suspicious visitors, and unauthorized laughter.',
     accent: 'brown',
+    path: '/rent-calculator',
+    icon: Calculator,
   },
 ]
 
 function ApartmentIntro() {
-  const [stage, setStage] = useState(INTRO_STAGES.CLOSED)
+  const navigate = useNavigate()
+
+  const [stage, setStage] = useState(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+
+    return searchParams.get('view') === 'menu'
+      ? INTRO_STAGES.INSIDE
+      : INTRO_STAGES.CLOSED
+  })
+
   const audioContextRef = useRef(null)
 
   useEffect(() => {
@@ -118,8 +143,9 @@ function ApartmentIntro() {
   }
 
   function handleReturnOutside() {
-    setStage(INTRO_STAGES.CLOSED)
-  }
+  setStage(INTRO_STAGES.CLOSED)
+  navigate('/', { replace: true })
+}
 
   const isOpening = stage === INTRO_STAGES.OPENING
   const isInside = stage === INTRO_STAGES.INSIDE
@@ -215,28 +241,40 @@ function ApartmentIntro() {
             </div>
 
             <div className="activity-menu">
-              {activities.map((activity) => (
-                <button
-                  className={`activity-menu__card activity-menu__card--${activity.accent}`}
-                  type="button"
-                  key={activity.title}
-                >
-                  <span className="activity-menu__title">
-                    {activity.title}
-                  </span>
+              {activities.map((activity) => {
+                const Icon = activity.icon
 
-                  <span className="activity-menu__description">
-                    {activity.description}
-                  </span>
-
-                  <span
-                    className="activity-menu__link"
-                    aria-hidden="true"
+                return (
+                  <Link
+                    className={`activity-menu__card activity-menu__card--${activity.accent}`}
+                    key={activity.title}
+                    to={activity.path}
                   >
-                    Enter activity →
-                  </span>
-                </button>
-              ))}
+                    <span className="activity-menu__icon">
+                      <Icon
+                        aria-hidden="true"
+                        size={28}
+                        strokeWidth={1.8}
+                      />
+                    </span>
+
+                    <span className="activity-menu__title">
+                      {activity.title}
+                    </span>
+
+                    <span className="activity-menu__description">
+                      {activity.description}
+                    </span>
+
+                    <span
+                      className="activity-menu__link"
+                      aria-hidden="true"
+                    >
+                      Enter activity →
+                    </span>
+                  </Link>
+                )
+              })}
             </div>
 
             <button
@@ -263,4 +301,3 @@ function ApartmentIntro() {
 }
 
 export default ApartmentIntro
-
