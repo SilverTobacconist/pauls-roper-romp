@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 
 import ActivityLayout from '../../layouts/ActivityLayout'
+import { submitRopersReview } from '../../lib/submitRopersReview'
 
 const REVIEW_TARGETS = [
   {
@@ -89,8 +90,9 @@ function ReviewsPage() {
   const [displayName, setDisplayName] = useState('')
   const [rating, setRating] = useState(3)
   const [reviewText, setReviewText] = useState('')
-  const [submittedReview, setSubmittedReview] = useState(null)
   const [formMessage, setFormMessage] = useState('')
+  const [submissionStatus, setSubmissionStatus] =
+    useState('idle')
 
   const selectedTarget = useMemo(
     () =>
@@ -104,6 +106,8 @@ function ReviewsPage() {
   const isReviewTooShort =
     reviewLength > 0 && reviewLength < MIN_REVIEW_LENGTH
   const isReviewTooLong = reviewText.length > MAX_REVIEW_LENGTH
+  const isSubmitting = submissionStatus === 'submitting'
+  const isSubmitted = submissionStatus === 'submitted'
 
   const previewSubject =
     subjectName.trim() || selectedTarget.label
@@ -111,9 +115,17 @@ function ReviewsPage() {
   const previewName =
     displayName.trim() || 'An Unqualified Critic'
 
+  function clearMessages() {
+    setFormMessage('')
+
+    if (submissionStatus !== 'submitting') {
+      setSubmissionStatus('idle')
+    }
+  }
+
   function handleTargetChange(event) {
     setReviewTarget(event.target.value)
-    setFormMessage('')
+    clearMessages()
   }
 
   function useRandomPrompt() {
@@ -122,7 +134,7 @@ function ReviewsPage() {
     )
 
     setReviewText(randomPrompt)
-    setFormMessage('')
+    clearMessages()
   }
 
   function handleReviewChange(event) {
@@ -130,12 +142,16 @@ function ReviewsPage() {
 
     if (nextValue.length <= MAX_REVIEW_LENGTH) {
       setReviewText(nextValue)
-      setFormMessage('')
+      clearMessages()
     }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
+
+    if (isSubmitting) {
+      return
+    }
 
     if (!subjectName.trim()) {
       setFormMessage(
@@ -158,15 +174,25 @@ function ReviewsPage() {
       return
     }
 
-    setSubmittedReview({
-      target: selectedTarget.label,
-      subject: subjectName.trim(),
-      name: displayName.trim(),
-      rating,
-      text: reviewText.trim(),
-    })
-
     setFormMessage('')
+    setSubmissionStatus('submitting')
+
+    try {
+      await submitRopersReview({
+        displayName,
+        subject: subjectName,
+        category: reviewTarget,
+        rating,
+        review: reviewText,
+      })
+
+      setSubmissionStatus('submitted')
+    } catch {
+      setSubmissionStatus('error')
+      setFormMessage(
+        'Stanley misplaced the complaint before it reached the filing cabinet. Please try again.',
+      )
+    }
   }
 
   function resetForm() {
@@ -175,8 +201,8 @@ function ReviewsPage() {
     setDisplayName('')
     setRating(3)
     setReviewText('')
-    setSubmittedReview(null)
     setFormMessage('')
+    setSubmissionStatus('idle')
   }
 
   return (
@@ -209,6 +235,7 @@ function ReviewsPage() {
               id="review-target"
               value={reviewTarget}
               onChange={handleTargetChange}
+              disabled={isSubmitting}
             >
               {REVIEW_TARGETS.map((target) => (
                 <option
@@ -234,14 +261,18 @@ function ReviewsPage() {
               value={subjectName}
               maxLength={70}
               placeholder="Example: The suspicious green cocktail"
+              disabled={isSubmitting}
               onChange={(event) => {
                 setSubjectName(event.target.value)
-                setFormMessage('')
+                clearMessages()
               }}
             />
           </div>
 
-          <fieldset className="reviews-rating">
+          <fieldset
+            className="reviews-rating"
+            disabled={isSubmitting}
+          >
             <legend>Your completely objective rating</legend>
 
             <div className="reviews-rating__buttons">
@@ -260,7 +291,7 @@ function ReviewsPage() {
                   key={starValue}
                   onClick={() => {
                     setRating(starValue)
-                    setFormMessage('')
+                    clearMessages()
                   }}
                 >
                   <Star
@@ -291,6 +322,7 @@ function ReviewsPage() {
               <button
                 className="reviews-prompt-button"
                 type="button"
+                disabled={isSubmitting}
                 onClick={useRandomPrompt}
               >
                 <RefreshCw aria-hidden="true" size={15} />
@@ -304,6 +336,7 @@ function ReviewsPage() {
               rows={6}
               placeholder="Write something confidently inaccurate..."
               aria-describedby="review-length"
+              disabled={isSubmitting}
               onChange={handleReviewChange}
             />
 
@@ -338,9 +371,10 @@ function ReviewsPage() {
               value={displayName}
               maxLength={40}
               placeholder="Example: A Concerned Neighbor"
+              disabled={isSubmitting}
               onChange={(event) => {
                 setDisplayName(event.target.value)
-                setFormMessage('')
+                clearMessages()
               }}
             />
           </div>
@@ -354,9 +388,23 @@ function ReviewsPage() {
           <button
             className="reviews-submit-button"
             type="submit"
+            disabled={isSubmitting}
           >
-            <Send aria-hidden="true" size={18} />
-            Submit for Stanley’s Inspection
+            {isSubmitting ? (
+              <>
+                <RefreshCw
+                  aria-hidden="true"
+                  size={18}
+                  className="reviews-submit-button__spinner"
+                />
+                Filing Complaint...
+              </>
+            ) : (
+              <>
+                <Send aria-hidden="true" size={18} />
+                Submit for Stanley’s Inspection
+              </>
+            )}
           </button>
         </form>
 
@@ -407,7 +455,7 @@ function ReviewsPage() {
             </div>
           </div>
 
-          {submittedReview && (
+          {isSubmitted && (
             <div
               className="reviews-success"
               role="status"
@@ -415,10 +463,10 @@ function ReviewsPage() {
               <Check aria-hidden="true" size={22} />
 
               <div>
-                <strong>Review prepared successfully.</strong>
+                <strong>Review submitted successfully.</strong>
                 <span>
-                  The database connection comes next. For now,
-                  Stanley has placed it in an imaginary folder.
+                  Stanley has placed it in the inspection
+                  queue. It will remain hidden until approved.
                 </span>
               </div>
             </div>
