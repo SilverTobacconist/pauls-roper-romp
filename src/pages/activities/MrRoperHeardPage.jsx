@@ -6,12 +6,12 @@ import { Ear } from "lucide-react";
 
 import ActivityLayout from "../../layouts/ActivityLayout";
 
+import FutureTurnGameplay from "../../components/roper/FutureTurnGameplay";
 import TurnOneRecorder from "../../components/roper/TurnOneRecorder";
 
 import {
   RoperCompletionPanel,
   RoperErrorPanel,
-  RoperFutureTurnPanel,
   RoperLoadingPanel,
   RoperRevealPanel,
   RoperUnavailablePanel,
@@ -20,6 +20,7 @@ import {
 
 import {
   getClaimStatus,
+  getTurnNumber,
   PAGE_STATES,
 } from "../../components/roper/roperUtils";
 
@@ -43,6 +44,8 @@ function MrRoperHeardPage() {
 
   const [errorMessage, setErrorMessage] =
     useState("");
+
+  
 
   useEffect(() => {
     let isCancelled = false;
@@ -166,9 +169,18 @@ function MrRoperHeardPage() {
     );
   }
 
+  function handlePhraseSubmitted(result) {
+  console.info(
+    "Roper phrase submission complete:",
+    result
+  );
+}
+
+  const turnNumber =
+    getTurnNumber(claimResult);
+
   const isTurnOne =
-    Number(claimResult?.turn_number) ===
-    1;
+    turnNumber === 1;
 
   const requiresRecording =
     claimResult?.requires_recording !==
@@ -200,11 +212,38 @@ function MrRoperHeardPage() {
 
       {pageState ===
         PAGE_STATES.ACTIVE_TURN &&
-        (!isTurnOne ||
-          !requiresRecording) && (
-          <RoperFutureTurnPanel
+        turnNumber >= 2 &&
+        turnNumber <= 5 && (
+          <FutureTurnGameplay
             claimResult={claimResult}
+            onPhraseSubmitted={
+              handlePhraseSubmitted
+            }
           />
+        )}
+
+      {pageState ===
+        PAGE_STATES.ACTIVE_TURN &&
+        !isTurnOne &&
+        !(
+          turnNumber >= 2 &&
+          turnNumber <= 5
+        ) && (
+          <div className="activity-placeholder">
+            <p className="activity-placeholder__label">
+              Unsupported turn
+            </p>
+
+            <h2>
+              This turn number is not
+              recognized.
+            </h2>
+
+            <p>
+              Received turn:{" "}
+              {turnNumber ?? "missing"}
+            </p>
+          </div>
         )}
 
       {pageState ===
