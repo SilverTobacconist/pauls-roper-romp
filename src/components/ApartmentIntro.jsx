@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import apartmentInterior from '../assets/hero-apartment-interior.png'
 import apartmentExterior from '../assets/hero-apartment-exterior.png'
+import apartmentInterior from '../assets/hero-apartment-interior.png'
 import closedDoor from '../assets/door-201-closed.png'
 import openDoor from '../assets/door-201-open.png'
 
@@ -11,8 +11,36 @@ const INTRO_STAGES = {
   INSIDE: 'inside',
 }
 
+const activities = [
+  {
+    title: 'Critic’s Choice Reviews',
+    description:
+      'Write a wildly inaccurate review of a drink, outfit, business, or anything else you barely observed.',
+    accent: 'orange',
+  },
+  {
+    title: 'What Did Mr. Roper Hear?',
+    description:
+      'Listen to the previous recording, type what you heard, and record the next misunderstanding.',
+    accent: 'mustard',
+  },
+  {
+    title: 'Lost Scripts',
+    description:
+      'Supply the missing words and create a disastrous lost episode of Three’s Company.',
+    accent: 'green',
+  },
+  {
+    title: 'Stanley’s Rent Calculator',
+    description:
+      'Calculate rent after parties, broken lamps, suspicious visitors, and unauthorized laughter.',
+    accent: 'brown',
+  },
+]
+
 function ApartmentIntro() {
   const [stage, setStage] = useState(INTRO_STAGES.CLOSED)
+  const audioContextRef = useRef(null)
 
   useEffect(() => {
     if (stage !== INTRO_STAGES.OPENING) {
@@ -21,19 +49,72 @@ function ApartmentIntro() {
 
     const interiorTimer = window.setTimeout(() => {
       setStage(INTRO_STAGES.INSIDE)
-    }, 1300)
+    }, 1550)
 
     return () => {
       window.clearTimeout(interiorTimer)
     }
   }, [stage])
 
-  function handleEnterApartment() {
+  function createKnock(audioContext, startTime, volume = 0.7) {
+    const oscillator = audioContext.createOscillator()
+    const gain = audioContext.createGain()
+
+    oscillator.type = 'sine'
+    oscillator.frequency.setValueAtTime(115, startTime)
+    oscillator.frequency.exponentialRampToValueAtTime(
+      70,
+      startTime + 0.09,
+    )
+
+    gain.gain.setValueAtTime(volume, startTime)
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      startTime + 0.12,
+    )
+
+    oscillator.connect(gain)
+    gain.connect(audioContext.destination)
+
+    oscillator.start(startTime)
+    oscillator.stop(startTime + 0.13)
+  }
+
+  async function playKnockingSound() {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext
+
+    if (!AudioContextClass) {
+      return
+    }
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextClass()
+    }
+
+    const audioContext = audioContextRef.current
+
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume()
+    }
+
+    const now = audioContext.currentTime
+
+    createKnock(audioContext, now)
+    createKnock(audioContext, now + 0.19, 0.62)
+    createKnock(audioContext, now + 0.47, 0.76)
+  }
+
+  async function handleKnock() {
     if (stage !== INTRO_STAGES.CLOSED) {
       return
     }
 
-    setStage(INTRO_STAGES.OPENING)
+    await playKnockingSound()
+
+    window.setTimeout(() => {
+      setStage(INTRO_STAGES.OPENING)
+    }, 650)
   }
 
   function handleReturnOutside() {
@@ -44,43 +125,39 @@ function ApartmentIntro() {
   const isInside = stage === INTRO_STAGES.INSIDE
 
   return (
-    <main
-      className={`apartment-intro ${
-        isInside ? 'apartment-intro--inside' : ''
-      }`}
-    >
+    <main className="apartment-intro">
       <div className="apartment-scene" aria-live="polite">
         <img
-  className={`scene-layer scene-door scene-door-closed ${
-    isOpening || isInside ? 'scene-layer--hidden' : ''
-  }`}
-  src={closedDoor}
-  alt="The closed wooden door of Apartment 201"
-/>
+          className={`scene-layer scene-door scene-door-closed ${
+            isOpening || isInside ? 'scene-layer--hidden' : ''
+          }`}
+          src={closedDoor}
+          alt="The closed wooden door of Apartment 201"
+        />
 
-<img
-  className={`scene-layer scene-background scene-exterior ${
-    isInside ? 'scene-layer--hidden' : ''
-  }`}
-  src={apartmentExterior}
-  alt=""
-/>
+        <img
+          className={`scene-layer scene-background scene-exterior ${
+            isInside ? 'scene-layer--hidden' : ''
+          }`}
+          src={apartmentExterior}
+          alt=""
+        />
 
-<img
-  className={`scene-layer scene-door scene-door-open ${
-    isOpening ? 'scene-layer--visible' : ''
-  }`}
-  src={openDoor}
-  alt="The open wooden door of Apartment 201"
-/>
+        <img
+          className={`scene-layer scene-door scene-door-open ${
+            isOpening ? 'scene-layer--visible' : ''
+          }`}
+          src={openDoor}
+          alt="The open wooden door of Apartment 201"
+        />
 
-<img
-  className={`scene-layer scene-background scene-interior ${
-    isInside ? 'scene-layer--visible' : ''
-  }`}
-  src={apartmentInterior}
-  alt=""
-/>
+        <img
+          className={`scene-layer scene-background scene-interior ${
+            isInside ? 'scene-layer--visible' : ''
+          }`}
+          src={apartmentInterior}
+          alt=""
+        />
 
         <div
           className={`scene-shade ${
@@ -93,54 +170,81 @@ function ApartmentIntro() {
             isOpening || isInside ? 'intro-content--hidden' : ''
           }`}
         >
-          <p className="intro-kicker">Paul’s Cigar Lounge Presents</p>
-
-          <h1 className="intro-title">Come and Knock on Our Pour</h1>
-
-          <p className="intro-description">
-            Step inside Apartment 201 for cocktails, questionable
-            reviews, lost scripts, and several misunderstandings that
-            could have been prevented by speaking clearly.
+          <p className="intro-kicker">
+            Paul’s Cigar Lounge Presents
           </p>
+
+          <h1 className="intro-title">
+            Come and Knock on Our Pour
+          </h1>
 
           <button
             className="enter-button"
             type="button"
-            onClick={handleEnterApartment}
+            onClick={handleKnock}
           >
-            Enter Apartment 201
+            Knock
           </button>
 
           <p className="intro-instruction">
-            Tap the door to begin the Roper Romp experience.
+            Knock on the door to enter the Roper Romp experience.
           </p>
         </section>
 
         {isOpening && (
           <div className="opening-message" role="status">
             <span className="opening-message__line">
-              Come and knock on our door…
+              Just a minute!
             </span>
           </div>
         )}
 
         {isInside && (
-          <section className="inside-content">
-            <p className="inside-kicker">Welcome to Apartment 201</p>
+          <section className="home-menu">
+            <div className="home-menu__heading">
+              <p className="inside-kicker">
+                Welcome to Apartment 201
+              </p>
 
-            <h2>The party has started.</h2>
+              <h2>Choose Your Experience</h2>
 
-            <p>
-              This will become the main activity menu during the next
-              build step.
-            </p>
+              <p>
+                Four activities. Three roommates. Several entirely
+                preventable misunderstandings.
+              </p>
+            </div>
+
+            <div className="activity-menu">
+              {activities.map((activity) => (
+                <button
+                  className={`activity-menu__card activity-menu__card--${activity.accent}`}
+                  type="button"
+                  key={activity.title}
+                >
+                  <span className="activity-menu__title">
+                    {activity.title}
+                  </span>
+
+                  <span className="activity-menu__description">
+                    {activity.description}
+                  </span>
+
+                  <span
+                    className="activity-menu__link"
+                    aria-hidden="true"
+                  >
+                    Enter activity →
+                  </span>
+                </button>
+              ))}
+            </div>
 
             <button
-              className="secondary-button"
+              className="secondary-button home-menu__return"
               type="button"
               onClick={handleReturnOutside}
             >
-              Test the Intro Again
+              Return to the Hallway
             </button>
           </section>
         )}
@@ -149,8 +253,8 @@ function ApartmentIntro() {
           <button
             className="door-click-target"
             type="button"
-            aria-label="Open the door to Apartment 201"
-            onClick={handleEnterApartment}
+            aria-label="Knock on the door to Apartment 201"
+            onClick={handleKnock}
           />
         )}
       </div>
@@ -159,3 +263,4 @@ function ApartmentIntro() {
 }
 
 export default ApartmentIntro
+

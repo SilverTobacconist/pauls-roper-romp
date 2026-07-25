@@ -34,7 +34,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  overflow-x: hidden;
+  overflow: hidden;
   background: var(--brown-deep);
 }
 
@@ -58,9 +58,14 @@ img {
   min-height: 100vh;
 }
 
+/* =========================================================
+   FULL-SCREEN APARTMENT SCENE
+   ========================================================= */
+
 .apartment-intro {
   display: grid;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
   place-items: center;
   overflow: hidden;
   background:
@@ -72,7 +77,7 @@ img {
     var(--brown-deep);
 }
 
- .apartment-scene {
+.apartment-scene {
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -81,6 +86,10 @@ img {
   background: #080402;
 }
 
+/*
+  All scene artwork uses the exact dimensions of the browser window.
+  This preserves alignment between the exterior, doors, and interior.
+*/
 .scene-layer {
   position: absolute;
   inset: 0;
@@ -128,10 +137,13 @@ img {
   pointer-events: none;
 }
 
-
 .scene-door-open.scene-layer--visible {
-  animation: door-reveal 1300ms ease forwards;
+  animation: door-reveal 1550ms ease forwards;
 }
+
+/* =========================================================
+   DARK OVERLAY FOR TEXT READABILITY
+   ========================================================= */
 
 .scene-shade {
   position: absolute;
@@ -159,29 +171,34 @@ img {
   background:
     linear-gradient(
       90deg,
-      rgba(12, 5, 2, 0.72) 0%,
-      rgba(12, 5, 2, 0.18) 38%,
-      rgba(12, 5, 2, 0.18) 62%,
-      rgba(12, 5, 2, 0.68) 100%
+      rgba(12, 5, 2, 0.68) 0%,
+      rgba(12, 5, 2, 0.2) 30%,
+      rgba(12, 5, 2, 0.18) 70%,
+      rgba(12, 5, 2, 0.65) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(10, 4, 2, 0.3),
-      rgba(10, 4, 2, 0.3)
+      rgba(10, 4, 2, 0.28) 0%,
+      rgba(10, 4, 2, 0.2) 50%,
+      rgba(10, 4, 2, 0.42) 100%
     );
 }
 
+/* =========================================================
+   EXTERIOR INTRO CONTENT
+   ========================================================= */
+
 .intro-content,
-.inside-content,
-.opening-message {
+.opening-message,
+.home-menu {
   position: relative;
   z-index: 6;
 }
 
 .intro-content {
   display: flex;
-  width: min(92%, 760px);
-  min-height: 100vh;
+  width: min(92%, 820px);
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -215,26 +232,18 @@ img {
 }
 
 .intro-title {
-  max-width: 760px;
+  max-width: 820px;
   margin: 0;
   color: var(--cream);
-  font-size: clamp(3rem, 8vw, 6.8rem);
+  font-size: clamp(3rem, 7.5vw, 6.5rem);
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.92;
 }
 
-.intro-description {
-  max-width: 650px;
-  margin: 28px auto 0;
-  color: var(--cream-muted);
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-  font-size: clamp(1rem, 2vw, 1.22rem);
-  line-height: 1.65;
-}
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
 .enter-button,
 .secondary-button {
@@ -277,7 +286,8 @@ img {
 
 .enter-button:focus-visible,
 .secondary-button:focus-visible,
-.door-click-target:focus-visible {
+.door-click-target:focus-visible,
+.activity-menu__card:focus-visible {
   outline: 4px solid rgba(255, 244, 214, 0.92);
   outline-offset: 5px;
 }
@@ -292,21 +302,37 @@ img {
   font-size: 0.82rem;
 }
 
+.secondary-button {
+  border: 2px solid var(--cream);
+  background: rgba(36, 17, 9, 0.78);
+  color: var(--cream);
+  backdrop-filter: blur(8px);
+}
+
+/* =========================================================
+   INVISIBLE DOOR CLICK TARGET
+   ========================================================= */
+
 .door-click-target {
   position: absolute;
   z-index: 5;
-  top: 9%;
-  left: 33%;
-  width: 34%;
-  height: 79%;
+  top: 8%;
+  left: 32%;
+  width: 36%;
+  height: 82%;
   border: 0;
   background: transparent;
   cursor: pointer;
 }
 
+/* =========================================================
+   DOOR OPENING MESSAGE
+   ========================================================= */
+
 .opening-message {
   display: grid;
-  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
   place-items: center;
   padding: 24px;
   pointer-events: none;
@@ -323,50 +349,178 @@ img {
   font-size: clamp(1rem, 3vw, 1.4rem);
   font-style: italic;
   backdrop-filter: blur(8px);
-  animation: opening-message-fade 1300ms ease forwards;
+  animation: opening-message-fade 1550ms ease forwards;
 }
 
-.inside-content {
+/* =========================================================
+   INTERIOR HOMEPAGE MENU
+   ========================================================= */
+
+.home-menu {
   display: flex;
-  width: min(90%, 720px);
-  min-height: 100vh;
+  width: min(1180px, 94%);
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  padding: 24px;
+  padding: 32px 24px;
+  overflow-y: auto;
   text-align: center;
-  text-shadow: 0 4px 18px var(--shadow-dark);
+  text-shadow: 0 3px 14px var(--shadow-dark);
   animation: inside-content-enter 800ms ease both;
 }
 
-.inside-content h2 {
+.home-menu__heading {
+  max-width: 780px;
+  flex-shrink: 0;
+}
+
+.home-menu__heading h2 {
   margin: 0;
   color: var(--cream);
-  font-size: clamp(2.7rem, 7vw, 5.8rem);
+  font-size: clamp(2.5rem, 5vw, 4.8rem);
   letter-spacing: -0.04em;
   line-height: 0.96;
 }
 
-.inside-content p:not(.inside-kicker) {
-  max-width: 600px;
-  margin: 22px auto 0;
+.home-menu__heading > p:last-child {
+  max-width: 650px;
+  margin: 18px auto 0;
   color: var(--cream-muted);
   font-family:
     Arial,
     Helvetica,
     sans-serif;
-  font-size: 1.05rem;
-  line-height: 1.65;
+  font-size: clamp(0.95rem, 1.7vw, 1.1rem);
+  line-height: 1.55;
 }
 
-.secondary-button {
+.activity-menu {
+  display: grid;
+  width: 100%;
+  flex-shrink: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 15px;
   margin-top: 28px;
-  border: 2px solid var(--cream);
-  background: rgba(36, 17, 9, 0.72);
-  color: var(--cream);
-  backdrop-filter: blur(8px);
 }
+
+.activity-menu__card {
+  position: relative;
+  display: flex;
+  min-height: 205px;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid rgba(255, 244, 214, 0.38);
+  border-radius: 18px;
+  padding: 22px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px rgba(255, 255, 255, 0.16);
+  color: var(--cream);
+  text-align: left;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.activity-menu__card::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.12),
+      transparent 48%
+    );
+  content: '';
+  pointer-events: none;
+}
+
+.activity-menu__card:hover,
+.activity-menu__card:focus-visible {
+  transform: translateY(-5px);
+  border-color: rgba(255, 244, 214, 0.8);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.46),
+    inset 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.activity-menu__card:focus-visible {
+  outline-offset: 4px;
+}
+
+.activity-menu__card--orange {
+  background: rgba(154, 65, 27, 0.88);
+}
+
+.activity-menu__card--mustard {
+  background: rgba(151, 105, 26, 0.9);
+}
+
+.activity-menu__card--green {
+  background: rgba(55, 72, 31, 0.9);
+}
+
+.activity-menu__card--brown {
+  background: rgba(76, 37, 20, 0.91);
+}
+
+.activity-menu__title,
+.activity-menu__description,
+.activity-menu__link {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.activity-menu__title {
+  font-size: clamp(1.22rem, 2vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.activity-menu__description {
+  margin-top: 13px;
+  color: rgba(255, 244, 214, 0.88);
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+  font-size: 0.87rem;
+  line-height: 1.48;
+}
+
+.activity-menu__link {
+  margin-top: auto;
+  padding-top: 18px;
+  color: #ffe29b;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.home-menu__return {
+  min-height: 42px;
+  flex-shrink: 0;
+  margin-top: 22px;
+  padding: 9px 18px;
+  font-size: 0.8rem;
+}
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
 
 @keyframes door-reveal {
   0% {
@@ -412,9 +566,11 @@ img {
   }
 }
 
-@media (max-width: 800px) {
-  
+/* =========================================================
+   TABLETS
+   ========================================================= */
 
+@media (max-width: 800px) {
   .scene-shade {
     background:
       linear-gradient(
@@ -422,6 +578,16 @@ img {
         rgba(10, 4, 2, 0.58) 0%,
         rgba(10, 4, 2, 0.15) 30%,
         rgba(10, 4, 2, 0.48) 100%
+      );
+  }
+
+  .scene-shade--inside {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(10, 4, 2, 0.5) 0%,
+        rgba(10, 4, 2, 0.18) 35%,
+        rgba(10, 4, 2, 0.5) 100%
       );
   }
 
@@ -434,42 +600,91 @@ img {
     font-size: clamp(3rem, 15vw, 5rem);
   }
 
-  .intro-description {
-    max-width: 520px;
-    font-size: 0.98rem;
-  }
-
   .door-click-target {
     top: 7%;
     left: 22%;
     width: 56%;
     height: 72%;
   }
+
+  .home-menu {
+    justify-content: flex-start;
+    padding-top: 42px;
+    padding-bottom: 42px;
+  }
+
+  .home-menu__heading h2 {
+    font-size: clamp(2.4rem, 9vw, 4rem);
+  }
+
+  .activity-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .activity-menu__card {
+    min-height: 185px;
+  }
 }
+
+/* =========================================================
+   PHONES
+   ========================================================= */
 
 @media (max-width: 520px) {
   .intro-content {
     padding-right: 18px;
+    padding-bottom: 7vh;
     padding-left: 18px;
   }
 
-  .intro-description {
-    display: none;
+  .intro-title {
+    font-size: clamp(2.65rem, 13vw, 4rem);
   }
 
   .enter-button {
-    width: min(100%, 310px);
+    width: min(100%, 280px);
   }
 
   .intro-instruction {
     max-width: 280px;
   }
 
-  .inside-content {
-  justify-content: center;
-  padding: 24px 18px;
+  .home-menu {
+    width: 100%;
+    padding: 28px 16px 36px;
+  }
+
+  .home-menu__heading h2 {
+    font-size: clamp(2.25rem, 11vw, 3.35rem);
+  }
+
+  .home-menu__heading > p:last-child {
+    font-size: 0.9rem;
+  }
+
+  .activity-menu {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .activity-menu__card {
+    min-height: 150px;
+    padding: 18px;
+  }
+
+  .activity-menu__description {
+    font-size: 0.82rem;
+  }
+
+  .home-menu__return {
+    margin-bottom: 12px;
+  }
 }
-}
+
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -480,4 +695,39 @@ img {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+
+/* Force the interior menu above every scene layer */
+.apartment-scene > .home-menu {
+  position: absolute;
+  z-index: 50;
+  inset: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  overflow-y: auto;
+  opacity: 1;
+  visibility: visible;
+  color: #fff4d6;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.apartment-scene > .scene-background,
+.apartment-scene > .scene-door {
+  z-index: 1;
+}
+
+.apartment-scene > .scene-shade {
+  z-index: 5;
+}
+
+.apartment-scene > .intro-content,
+.apartment-scene > .opening-message {
+  z-index: 10;
 }
