@@ -32,45 +32,7 @@ export function RoperLoadingPanel() {
   );
 }
 
-export function RoperWaitingPanel({
-  claimResult,
-}) {
-  const secondsRemaining = Number(
-    claimResult?.seconds_remaining
-  );
 
-  return (
-    <div
-      className="activity-placeholder"
-      role="status"
-      aria-live="polite"
-    >
-      <p className="activity-placeholder__label">
-        Please wait
-      </p>
-
-      <h2>
-        Someone is currently misunderstanding
-        the situation.
-      </h2>
-
-      <p>Please wait a moment.</p>
-
-      {Number.isFinite(
-        secondsRemaining
-      ) && (
-        <p>
-          Their reservation has about{" "}
-          {Math.max(
-            0,
-            Math.ceil(secondsRemaining)
-          )}{" "}
-          seconds remaining.
-        </p>
-      )}
-    </div>
-  );
-}
 
 export function RoperRevealPanel({
   activityState,

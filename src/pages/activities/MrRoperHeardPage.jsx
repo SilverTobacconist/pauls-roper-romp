@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -7,6 +8,7 @@ import { Ear } from "lucide-react";
 import ActivityLayout from "../../layouts/ActivityLayout";
 
 import FutureTurnGameplay from "../../components/roper/FutureTurnGameplay";
+import RoperWaitingRoom from "../../components/roper/RoperWaitingRoom";
 import TurnOneRecorder from "../../components/roper/TurnOneRecorder";
 
 import {
@@ -15,7 +17,6 @@ import {
   RoperLoadingPanel,
   RoperRevealPanel,
   RoperUnavailablePanel,
-  RoperWaitingPanel,
 } from "../../components/roper/RoperStatusPanels";
 
 import {
@@ -39,13 +40,13 @@ function MrRoperHeardPage() {
   const [claimResult, setClaimResult] =
     useState(null);
 
-  const [completionResult, setCompletionResult] =
-    useState(null);
+  const [
+    completionResult,
+    setCompletionResult,
+  ] = useState(null);
 
   const [errorMessage, setErrorMessage] =
     useState("");
-
-  
 
   useEffect(() => {
     let isCancelled = false;
@@ -161,15 +162,65 @@ function MrRoperHeardPage() {
     };
   }, []);
 
-  function handleTurnCompleted(result) {
-    setCompletionResult(result);
+  const handleTurnCompleted =
+    useCallback((result) => {
+      setCompletionResult(result);
 
-    setPageState(
-      PAGE_STATES.COMPLETED
-    );
-  }
+      setPageState(
+        PAGE_STATES.COMPLETED
+      );
+    }, []);
 
-  
+  const handleWaitingTurnClaimed =
+    useCallback((result) => {
+      setClaimResult(result);
+
+      setErrorMessage("");
+
+      setPageState(
+        PAGE_STATES.ACTIVE_TURN
+      );
+    }, []);
+
+  const handleWaitingReveal =
+    useCallback((result) => {
+      setActivityState(
+        (currentState) => ({
+          ...currentState,
+          ...result,
+          mode: "reveal",
+        })
+      );
+
+      setPageState(
+        PAGE_STATES.REVEAL
+      );
+    }, []);
+
+  const handleWaitingUnavailable =
+    useCallback(() => {
+      setPageState(
+        PAGE_STATES.UNAVAILABLE
+      );
+    }, []);
+
+  const handleWaitingError =
+    useCallback((error) => {
+      console.error(
+        "Roper waiting-room error:",
+        error
+      );
+
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "The waiting room stopped responding."
+      );
+
+      setPageState(
+        PAGE_STATES.ERROR
+      );
+    }, []);
 
   const turnNumber =
     getTurnNumber(claimResult);
@@ -210,11 +261,11 @@ function MrRoperHeardPage() {
         turnNumber >= 2 &&
         turnNumber <= 5 && (
           <FutureTurnGameplay
-  claimResult={claimResult}
-  onCompleted={
-    handleTurnCompleted
-  }
-/>
+            claimResult={claimResult}
+            onCompleted={
+              handleTurnCompleted
+            }
+          />
         )}
 
       {pageState ===
@@ -252,15 +303,31 @@ function MrRoperHeardPage() {
 
       {pageState ===
         PAGE_STATES.WAITING && (
-        <RoperWaitingPanel
-          claimResult={claimResult}
+        <RoperWaitingRoom
+          initialWaitingState={
+            claimResult
+          }
+          onTurnClaimed={
+            handleWaitingTurnClaimed
+          }
+          onReveal={
+            handleWaitingReveal
+          }
+          onUnavailable={
+            handleWaitingUnavailable
+          }
+          onError={
+            handleWaitingError
+          }
         />
       )}
 
       {pageState ===
         PAGE_STATES.REVEAL && (
         <RoperRevealPanel
-          activityState={activityState}
+          activityState={
+            activityState
+          }
         />
       )}
 
@@ -272,7 +339,9 @@ function MrRoperHeardPage() {
       {pageState ===
         PAGE_STATES.ERROR && (
         <RoperErrorPanel
-          errorMessage={errorMessage}
+          errorMessage={
+            errorMessage
+          }
         />
       )}
     </ActivityLayout>
