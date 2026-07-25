@@ -11,7 +11,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<ApartmentIntro />} />
+        <Route
+          path="/"
+          element={<ApartmentIntro />}
+        />
 
         <Route
           path="/reviews"
@@ -33,7 +36,10 @@ function App() {
           element={<RentCalculatorPage />}
         />
 
-        <Route path="*" element={<Navigate replace to="/" />} />
+        <Route
+          path="*"
+          element={<Navigate replace to="/" />}
+        />
       </Routes>
 
       <RadioPlayer />
