@@ -13,41 +13,57 @@ import apartmentInterior from '../assets/hero-apartment-interior.png'
 import closedDoor from '../assets/door-201-closed.png'
 import openDoor from '../assets/door-201-open.png'
 
+import { getRoperActivityState } from '../lib/roperService'
+
 const INTRO_STAGES = {
   CLOSED: 'closed',
   OPENING: 'opening',
   INSIDE: 'inside',
 }
 
+const DEFAULT_ROPER_ACTIVITY = {
+  title: 'What Did Mr. Roper Hear?',
+  description:
+    'Listen to the previous recording, type what you heard, and record the next misunderstanding.',
+  buttonText: 'Enter activity →',
+}
+
 const activities = [
   {
+    id: 'reviews',
     title: 'Critic’s Choice Reviews',
     description:
       'Write a wildly inaccurate review of a drink, outfit, business, or anything else you barely observed.',
+    buttonText: 'Enter activity →',
     accent: 'orange',
     path: '/reviews',
     icon: MessageSquareText,
   },
   {
-    title: 'What Did Mr. Roper Hear?',
-    description:
-      'Listen to the previous recording, type what you heard, and record the next misunderstanding.',
+    id: 'roper',
+    title: DEFAULT_ROPER_ACTIVITY.title,
+    description: DEFAULT_ROPER_ACTIVITY.description,
+    buttonText: DEFAULT_ROPER_ACTIVITY.buttonText,
     accent: 'mustard',
     path: '/mr-roper-heard',
     icon: Ear,
   },
   {
+    id: 'lost-scripts',
     title: 'Lost Scripts',
     description:
       'Supply the missing words and create a disastrous lost episode of Three’s Company.',
+    buttonText: 'Enter activity →',
     accent: 'green',
     path: '/lost-scripts',
     icon: ScrollText,
   },
   {
+    id: 'rent-calculator',
     title: 'Stanley’s Rent Calculator',
     description:
       'Calculate rent after parties, broken lamps, suspicious visitors, and unauthorized laughter.',
+    buttonText: 'Enter activity →',
     accent: 'brown',
     path: '/rent-calculator',
     icon: Calculator,
@@ -58,14 +74,58 @@ function ApartmentIntro() {
   const navigate = useNavigate()
 
   const [stage, setStage] = useState(() => {
-    const searchParams = new URLSearchParams(window.location.search)
+    const searchParams = new URLSearchParams(
+      window.location.search,
+    )
 
     return searchParams.get('view') === 'menu'
       ? INTRO_STAGES.INSIDE
       : INTRO_STAGES.CLOSED
   })
 
+  const [roperActivity, setRoperActivity] = useState(
+    DEFAULT_ROPER_ACTIVITY,
+  )
+
   const audioContextRef = useRef(null)
+
+  useEffect(() => {
+    let isCancelled = false
+
+    async function loadRoperActivityState() {
+      try {
+        const activityState =
+          await getRoperActivityState()
+
+        if (isCancelled || !activityState) {
+          return
+        }
+
+        setRoperActivity({
+          title:
+            activityState.card_title ||
+            DEFAULT_ROPER_ACTIVITY.title,
+          description:
+            activityState.card_description ||
+            DEFAULT_ROPER_ACTIVITY.description,
+          buttonText:
+            activityState.button_text ||
+            DEFAULT_ROPER_ACTIVITY.buttonText,
+        })
+      } catch (error) {
+        console.error(
+          'Could not load the Roper activity card state:',
+          error,
+        )
+      }
+    }
+
+    loadRoperActivityState()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     if (stage !== INTRO_STAGES.OPENING) {
@@ -81,7 +141,11 @@ function ApartmentIntro() {
     }
   }, [stage])
 
-  function createKnock(audioContext, startTime, volume = 0.7) {
+  function createKnock(
+    audioContext,
+    startTime,
+    volume = 0.7,
+  ) {
     const oscillator = audioContext.createOscillator()
     const gain = audioContext.createGain()
 
@@ -114,7 +178,8 @@ function ApartmentIntro() {
     }
 
     if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContextClass()
+      audioContextRef.current =
+        new AudioContextClass()
     }
 
     const audioContext = audioContextRef.current
@@ -143,19 +208,41 @@ function ApartmentIntro() {
   }
 
   function handleReturnOutside() {
-  setStage(INTRO_STAGES.CLOSED)
-  navigate('/', { replace: true })
-}
+    setStage(INTRO_STAGES.CLOSED)
+    navigate('/', { replace: true })
+  }
 
-  const isOpening = stage === INTRO_STAGES.OPENING
-  const isInside = stage === INTRO_STAGES.INSIDE
+  const displayedActivities = activities.map(
+    (activity) => {
+      if (activity.id !== 'roper') {
+        return activity
+      }
+
+      return {
+        ...activity,
+        title: roperActivity.title,
+        description: roperActivity.description,
+        buttonText: roperActivity.buttonText,
+      }
+    },
+  )
+
+  const isOpening =
+    stage === INTRO_STAGES.OPENING
+  const isInside =
+    stage === INTRO_STAGES.INSIDE
 
   return (
     <main className="apartment-intro">
-      <div className="apartment-scene" aria-live="polite">
+      <div
+        className="apartment-scene"
+        aria-live="polite"
+      >
         <img
           className={`scene-layer scene-door scene-door-closed ${
-            isOpening || isInside ? 'scene-layer--hidden' : ''
+            isOpening || isInside
+              ? 'scene-layer--hidden'
+              : ''
           }`}
           src={closedDoor}
           alt="The closed wooden door of Apartment 201"
@@ -193,7 +280,9 @@ function ApartmentIntro() {
 
         <section
           className={`intro-content ${
-            isOpening || isInside ? 'intro-content--hidden' : ''
+            isOpening || isInside
+              ? 'intro-content--hidden'
+              : ''
           }`}
         >
           <p className="intro-kicker">
@@ -213,12 +302,16 @@ function ApartmentIntro() {
           </button>
 
           <p className="intro-instruction">
-            Knock on the door to enter the Roper Romp experience.
+            Knock on the door to enter the Roper Romp
+            experience.
           </p>
         </section>
 
         {isOpening && (
-          <div className="opening-message" role="status">
+          <div
+            className="opening-message"
+            role="status"
+          >
             <span className="opening-message__line">
               Just a minute!
             </span>
@@ -235,19 +328,19 @@ function ApartmentIntro() {
               <h2>Choose Your Experience</h2>
 
               <p>
-                Four activities. Three roommates. Several entirely
-                preventable misunderstandings.
+                Four activities. Three roommates. Several
+                entirely preventable misunderstandings.
               </p>
             </div>
 
             <div className="activity-menu">
-              {activities.map((activity) => {
+              {displayedActivities.map((activity) => {
                 const Icon = activity.icon
 
                 return (
                   <Link
                     className={`activity-menu__card activity-menu__card--${activity.accent}`}
-                    key={activity.title}
+                    key={activity.id}
                     to={activity.path}
                   >
                     <span className="activity-menu__icon">
@@ -270,7 +363,7 @@ function ApartmentIntro() {
                       className="activity-menu__link"
                       aria-hidden="true"
                     >
-                      Enter activity →
+                      {activity.buttonText}
                     </span>
                   </Link>
                 )
