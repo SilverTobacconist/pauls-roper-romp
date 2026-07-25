@@ -1,0 +1,372 @@
+.roper-return-notice {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+  margin-top: 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(115, 79, 42, 0.22);
+  border-radius: 1rem;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 248, 231, 0.96),
+      rgba(239, 223, 186, 0.94)
+    );
+  color: #3f2818;
+  box-shadow:
+    0 12px 30px rgba(56, 35, 20, 0.1);
+}
+
+.roper-return-notice--completed {
+  padding: 1.25rem;
+  border-color: rgba(115, 79, 42, 0.34);
+}
+
+.roper-return-notice__icon {
+  display: grid;
+  width: 2.7rem;
+  height: 2.7rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(103, 67, 34, 0.12);
+}
+
+.roper-return-notice__label,
+.roper-stage-card__eyebrow {
+  margin: 0 0 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.roper-return-notice__label,
+.roper-return-notice strong {
+  color: #56391f;
+}
+
+.roper-return-notice__message {
+  margin: 0;
+  color: #3f2818;
+  line-height: 1.55;
+}
+
+.roper-return-notice__message {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.roper-reveal,
+.roper-reveal-state {
+  width: min(100%, 880px);
+  margin-inline: auto;
+}
+
+.roper-reveal-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.85rem;
+  padding: 3rem 1.25rem;
+  text-align: center;
+}
+
+.roper-reveal-state h2,
+.roper-reveal-state p {
+  margin: 0;
+}
+
+.roper-reveal__header {
+  max-width: 680px;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.roper-reveal__header h2 {
+  margin: 0.4rem 0 0.75rem;
+}
+
+.roper-reveal__header p {
+  line-height: 1.65;
+}
+
+.roper-conversation-nav {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.roper-conversation-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.roper-conversation-tab,
+.roper-conversation-nav__arrow {
+  border: 1px solid rgba(105, 73, 43, 0.25);
+  background: rgba(255, 255, 255, 0.68);
+  cursor: pointer;
+}
+
+.roper-conversation-tab {
+  flex: 0 0 auto;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+}
+
+.roper-conversation-tab--active {
+  background: #56391f;
+  color: #fffaf0;
+}
+
+.roper-conversation-nav__arrow {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.roper-conversation-nav__arrow:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.roper-original-card,
+.roper-stage-card,
+.roper-final-comparison {
+  border: 1px solid rgba(105, 73, 43, 0.22);
+  background: rgba(255, 252, 244, 0.95);
+  box-shadow:
+    0 18px 45px rgba(56, 35, 20, 0.1);
+}
+
+.roper-original-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 1.4rem;
+  border-radius: 1.25rem;
+}
+
+.roper-original-card__icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(103, 67, 34, 0.12);
+}
+
+.roper-original-card__character {
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+}
+
+.roper-original-card blockquote,
+.roper-stage-card blockquote,
+.roper-final-comparison blockquote {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.2rem, 3vw, 1.65rem);
+  line-height: 1.45;
+}
+
+.roper-timeline {
+  position: relative;
+  display: grid;
+  gap: 0;
+  width: min(100%, 720px);
+  margin: 1.5rem auto;
+}
+
+.roper-timeline__entry {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 0.9rem;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 380ms ease,
+    transform 380ms ease;
+  pointer-events: none;
+}
+
+.roper-timeline__entry--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.roper-timeline__marker {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #56391f;
+  color: #fffaf0;
+  font-weight: 800;
+}
+
+.roper-stage-card {
+  padding: 1.3rem;
+  border-radius: 1.1rem;
+}
+
+.roper-stage-card h3 {
+  margin: 0 0 0.8rem;
+  font-size: 1rem;
+}
+
+.roper-stage-card blockquote {
+  margin-bottom: 1rem;
+}
+
+.roper-stage-card__missing-audio {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+  opacity: 0.7;
+}
+
+.roper-timeline__arrow {
+  grid-column: 1;
+  justify-self: center;
+  margin-block: 0.6rem;
+  opacity: 0.55;
+}
+
+.roper-audio-button {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid rgba(86, 57, 31, 0.28);
+  border-radius: 999px;
+  background: rgba(86, 57, 31, 0.08);
+  color: inherit;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.roper-audio-button--playing {
+  background: #56391f;
+  color: #fffaf0;
+}
+
+.roper-audio-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.roper-final-comparison {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  margin-top: 2rem;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  border-radius: 1.3rem;
+  text-align: center;
+}
+
+.roper-final-comparison blockquote {
+  max-width: 650px;
+}
+
+.roper-final-comparison__ending {
+  margin: 0.5rem 0 0;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.roper-inline-error {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.8rem;
+  background: rgba(153, 42, 35, 0.1);
+}
+
+.roper-inline-error p {
+  margin: 0;
+}
+
+.roper-reveal-enter {
+  animation: roper-reveal-enter 480ms ease both;
+}
+
+.roper-spin {
+  animation: roper-spin 900ms linear infinite;
+}
+
+@keyframes roper-reveal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes roper-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roper-reveal-enter,
+  .roper-spin {
+    animation: none;
+  }
+
+  .roper-timeline__entry {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .roper-conversation-nav {
+    align-items: stretch;
+  }
+
+  .roper-conversation-tabs {
+    justify-content: flex-start;
+  }
+
+  .roper-timeline__entry {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+
+  .roper-timeline__marker {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .roper-original-card {
+    grid-template-columns: 1fr;
+  }
+
+  .roper-original-card__icon {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+}

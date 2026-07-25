@@ -8,6 +8,8 @@ import { Ear } from "lucide-react";
 import ActivityLayout from "../../layouts/ActivityLayout";
 
 import FutureTurnGameplay from "../../components/roper/FutureTurnGameplay";
+import RoperReturnNotice from "../../components/roper/RoperReturnNotice";
+import RoperRevealExperience from "../../components/roper/RoperRevealExperience";
 import RoperWaitingRoom from "../../components/roper/RoperWaitingRoom";
 import TurnOneRecorder from "../../components/roper/TurnOneRecorder";
 
@@ -15,7 +17,6 @@ import {
   RoperCompletionPanel,
   RoperErrorPanel,
   RoperLoadingPanel,
-  RoperRevealPanel,
   RoperUnavailablePanel,
 } from "../../components/roper/RoperStatusPanels";
 
@@ -29,6 +30,8 @@ import {
   claimRoperTurn,
   getRoperActivityState,
 } from "../../lib/roperService";
+
+import "../../styles/roperReveal.css";
 
 function MrRoperHeardPage() {
   const [pageState, setPageState] =
@@ -174,7 +177,6 @@ function MrRoperHeardPage() {
   const handleWaitingTurnClaimed =
     useCallback((result) => {
       setClaimResult(result);
-
       setErrorMessage("");
 
       setPageState(
@@ -204,24 +206,6 @@ function MrRoperHeardPage() {
       );
     }, []);
 
-  const handleWaitingError =
-    useCallback((error) => {
-      console.error(
-        "Roper waiting-room error:",
-        error
-      );
-
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "The waiting room stopped responding."
-      );
-
-      setPageState(
-        PAGE_STATES.ERROR
-      );
-    }, []);
-
   const turnNumber =
     getTurnNumber(claimResult);
 
@@ -231,6 +215,10 @@ function MrRoperHeardPage() {
   const requiresRecording =
     claimResult?.requires_recording !==
     false;
+
+  const shouldShowReturnNotice =
+    pageState !== PAGE_STATES.LOADING &&
+    pageState !== PAGE_STATES.REVEAL;
 
   return (
     <ActivityLayout
@@ -316,19 +304,28 @@ function MrRoperHeardPage() {
           onUnavailable={
             handleWaitingUnavailable
           }
-          onError={
-            handleWaitingError
-          }
+          onError={(error) => {
+            console.error(
+              "Roper waiting-room error:",
+              error
+            );
+
+            setErrorMessage(
+              error instanceof Error
+                ? error.message
+                : "The waiting room stopped responding."
+            );
+
+            setPageState(
+              PAGE_STATES.ERROR
+            );
+          }}
         />
       )}
 
       {pageState ===
         PAGE_STATES.REVEAL && (
-        <RoperRevealPanel
-          activityState={
-            activityState
-          }
-        />
+        <RoperRevealExperience />
       )}
 
       {pageState ===
@@ -341,6 +338,19 @@ function MrRoperHeardPage() {
         <RoperErrorPanel
           errorMessage={
             errorMessage
+          }
+        />
+      )}
+
+      {shouldShowReturnNotice && (
+        <RoperReturnNotice
+          revealAt={
+            activityState?.reveal_at ??
+            claimResult?.reveal_at
+          }
+          completed={
+            pageState ===
+            PAGE_STATES.COMPLETED
           }
         />
       )}
