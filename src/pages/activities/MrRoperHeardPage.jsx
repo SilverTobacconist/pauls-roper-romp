@@ -169,12 +169,7 @@ function MrRoperHeardPage() {
     );
   }
 
-  function handlePhraseSubmitted(result) {
-  console.info(
-    "Roper phrase submission complete:",
-    result
-  );
-}
+  
 
   const turnNumber =
     getTurnNumber(claimResult);
@@ -215,11 +210,11 @@ function MrRoperHeardPage() {
         turnNumber >= 2 &&
         turnNumber <= 5 && (
           <FutureTurnGameplay
-            claimResult={claimResult}
-            onPhraseSubmitted={
-              handlePhraseSubmitted
-            }
-          />
+  claimResult={claimResult}
+  onCompleted={
+    handleTurnCompleted
+  }
+/>
         )}
 
       {pageState ===
