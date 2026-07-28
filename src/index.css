@@ -2624,3 +2624,31 @@ img {
     animation: none;
   }
 }
+
+@media (max-width: 640px), (max-height: 700px) {
+  body {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .apartment-intro {
+    min-height: 100svh;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .apartment-scene {
+    min-height: 100svh;
+    height: auto;
+    overflow: visible;
+  }
+
+  .intro-content {
+    min-height: 100svh;
+    height: auto;
+    justify-content: flex-start;
+    padding-top: max(3rem, env(safe-area-inset-top));
+    padding-bottom: 7rem;
+  }
+}

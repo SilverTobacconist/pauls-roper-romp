@@ -175,11 +175,12 @@ function RadioPlayer() {
       return undefined
     }
 
-    fadeAudio(0, () => {
-      audio.pause()
-    })
+    window.clearInterval(fadeTimerRef.current)
 
-    return undefined
+audio.pause()
+audio.volume = 0
+
+return undefined
   }, [currentTrackIndex, fadeAudio, isPlaying])
 
   function turnMusicOn() {

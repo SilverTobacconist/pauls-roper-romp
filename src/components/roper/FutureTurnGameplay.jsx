@@ -1008,12 +1008,16 @@ function FutureTurnGameplay({
             Type exactly what you heard
           </h3>
 
-          <label htmlFor="roper-typed-phrase">
-            Your version of the phrase
-          </label>
+          <label
+  className="roper-typed-phrase-label"
+  htmlFor="roper-typed-phrase"
+>
+  Your version of the phrase
+</label>
 
-          <textarea
-            id="roper-typed-phrase"
+<textarea
+  className="roper-typed-phrase-input"
+  id="roper-typed-phrase"
             value={typedPhrase}
             onChange={(event) => {
               setTypedPhrase(

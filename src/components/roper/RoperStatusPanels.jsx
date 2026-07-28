@@ -150,14 +150,14 @@ export function RoperCompletionPanel({
       )}
 
       <button
-        className="primary-button"
-        type="button"
-        onClick={() => {
-          window.location.href = "/";
-        }}
-      >
-        Return to Apartment 201
-      </button>
+  className="primary-button"
+  type="button"
+  onClick={() => {
+    window.location.href = "/?view=menu";
+  }}
+>
+  Return to Apartment 201
+</button>
     </div>
   );
 }
