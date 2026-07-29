@@ -1631,6 +1631,196 @@ img {
 }
 
 /* =========================================================
+   SHARE THE ROMP
+   ========================================================= */
+
+.romp-share {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 101;
+  color: var(--cream);
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+}
+
+.romp-share--compact {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid rgba(255, 220, 145, 0.44);
+  border-radius: 999px;
+  padding: 0 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(111, 57, 28, 0.97),
+      rgba(43, 20, 10, 0.98)
+    );
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.42),
+    inset 0 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  color: var(--cream);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.romp-share--compact:hover,
+.romp-share--compact:focus-visible {
+  border-color: rgba(232, 202, 114, 0.76);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(137, 72, 34, 0.98),
+      rgba(54, 24, 11, 0.99)
+    );
+}
+
+.romp-share--expanded {
+  width: min(300px, calc(100vw - 32px));
+  border: 1px solid rgba(255, 220, 145, 0.44);
+  border-radius: 16px;
+  padding: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(111, 57, 28, 0.98),
+      rgba(43, 20, 10, 0.99)
+    );
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.48),
+    inset 0 1px rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(12px);
+}
+
+.romp-share__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.romp-share__heading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.romp-share__eyebrow {
+  color: #e8ca72;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.romp-share__heading strong {
+  color: var(--cream);
+  font-size: 1rem;
+}
+
+.romp-share__close {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--cream-muted);
+  cursor: pointer;
+}
+
+.romp-share__close:hover,
+.romp-share__close:focus-visible {
+  background: rgba(220, 166, 60, 0.18);
+  color: var(--cream);
+}
+
+.romp-share--expanded > p {
+  margin: 12px 0;
+  color: var(--cream-muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.romp-share__primary,
+.romp-share__secondary {
+  display: inline-flex;
+  width: 100%;
+  min-height: 41px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.73rem;
+  font-weight: 800;
+}
+
+.romp-share__primary {
+  border: 1px solid rgba(255, 226, 155, 0.5);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(212, 151, 50, 0.42),
+      rgba(116, 57, 20, 0.58)
+    );
+  color: var(--cream);
+}
+
+.romp-share__secondary {
+  margin-top: 8px;
+  border: 1px solid rgba(255, 226, 155, 0.24);
+  background: rgba(15, 8, 4, 0.3);
+  color: var(--cream-muted);
+}
+
+.romp-share__primary:hover,
+.romp-share__primary:focus-visible,
+.romp-share__secondary:hover,
+.romp-share__secondary:focus-visible {
+  border-color: rgba(255, 226, 155, 0.75);
+  color: var(--cream);
+}
+
+.romp-share__status {
+  display: block;
+  margin-top: 9px;
+  color: #e8ca72;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .romp-share {
+    left: 10px;
+    bottom: 10px;
+  }
+
+  .romp-share--compact {
+    min-height: 44px;
+    padding: 0 13px;
+    font-size: 0.7rem;
+  }
+
+  .romp-share--expanded {
+    width: min(
+      290px,
+      calc(100vw - 20px)
+    );
+  }
+}
+
+/* =========================================================
    CRITIC'S CHOICE REVIEWS
    ========================================================= */
 

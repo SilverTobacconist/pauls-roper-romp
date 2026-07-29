@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 
 import ApartmentIntro from './components/ApartmentIntro'
 import RadioPlayer from './components/RadioPlayer'
+import ShareTheRomp from './components/ShareTheRomp'
 import LostScriptsPage from './pages/activities/LostScriptsPage'
 import MrRoperHeardPage from './pages/activities/MrRoperHeardPage'
 import RentCalculatorPage from './pages/activities/RentCalculatorPage'
@@ -42,7 +43,8 @@ function App() {
         />
       </Routes>
 
-      <RadioPlayer />
+      <ShareTheRomp />
+<RadioPlayer />
     </>
   )
 }
