@@ -2,6 +2,7 @@ import {
   ArrowLeft,
   Check,
   Clapperboard,
+  Download,
   FileText,
   RefreshCw,
   ScrollText,
@@ -12,6 +13,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { jsPDF } from 'jspdf'
 
 import ActivityLayout from '../../layouts/ActivityLayout'
 import lostScripts from '../../data/lostScripts'
@@ -22,6 +24,9 @@ const PHASES = {
   RESTORING: 'restoring',
   REVEAL: 'reveal',
 }
+
+const COMPLETED_STORAGE_KEY =
+  'pauls-roper-romp-lost-scripts-completed'
 
 const RESTORING_MESSAGES = [
   'Recovering missing dialogue...',
@@ -109,6 +114,79 @@ function createEmptyAnswers(prompts) {
   )
 }
 
+function loadCompletedScriptIds() {
+  try {
+    const storedValue =
+      window.localStorage.getItem(
+        COMPLETED_STORAGE_KEY,
+      )
+
+    if (!storedValue) {
+      return []
+    }
+
+    const parsedValue =
+      JSON.parse(storedValue)
+
+    if (!Array.isArray(parsedValue)) {
+      return []
+    }
+
+    return parsedValue.filter((id) =>
+      lostScripts.some(
+        (script) => script.id === id,
+      ),
+    )
+  } catch {
+    return []
+  }
+}
+
+function saveCompletedScriptIds(ids) {
+  try {
+    window.localStorage.setItem(
+      COMPLETED_STORAGE_KEY,
+      JSON.stringify(ids),
+    )
+  } catch {
+    // The game still works when storage is
+    // unavailable, but progress will not persist.
+  }
+}
+
+function chooseRandomScript(
+  completedIds = [],
+  excludedScriptId = null,
+) {
+  let availableScripts =
+    lostScripts.filter(
+      (script) =>
+        !completedIds.includes(script.id),
+    )
+
+  if (
+    excludedScriptId &&
+    availableScripts.length > 1
+  ) {
+    availableScripts =
+      availableScripts.filter(
+        (script) =>
+          script.id !== excludedScriptId,
+      )
+  }
+
+  if (availableScripts.length === 0) {
+    availableScripts = [...lostScripts]
+  }
+
+  const randomIndex = Math.floor(
+    Math.random() *
+      availableScripts.length,
+  )
+
+  return availableScripts[randomIndex]
+}
+
 function renderParts(parts, answers) {
   return parts.map((part, index) => {
     if (typeof part === 'string') {
@@ -126,13 +204,85 @@ function renderParts(parts, answers) {
   })
 }
 
+function partsToPlainText(parts, answers) {
+  return parts
+    .map((part) => {
+      if (typeof part === 'string') {
+        return part
+      }
+
+      return answers[part.answerId] || ''
+    })
+    .join('')
+}
+
+function addWrappedPdfText({
+  document,
+  text,
+  x,
+  y,
+  maxWidth,
+  fontSize = 11,
+  lineHeight = 6,
+  fontStyle = 'normal',
+  leftMargin = 18,
+  bottomMargin = 18,
+}) {
+  document.setFont(
+    'helvetica',
+    fontStyle,
+  )
+  document.setFontSize(fontSize)
+
+  const lines =
+    document.splitTextToSize(
+      text,
+      maxWidth,
+    )
+
+  let currentY = y
+
+  lines.forEach((line) => {
+    if (
+      currentY >
+      document.internal.pageSize.getHeight() -
+        bottomMargin
+    ) {
+      document.addPage()
+      currentY = 20
+    }
+
+    document.text(line, x, currentY)
+    currentY += lineHeight
+  })
+
+  return {
+    y: currentY,
+    leftMargin,
+  }
+}
+
 function LostScriptsPage() {
+  const initialCompletedIds =
+    loadCompletedScriptIds()
+
   const [phase, setPhase] = useState(
     PHASES.PICKER,
   )
 
-  const [selectedScript, setSelectedScript] =
-    useState(() => lostScripts[0])
+  const [
+    completedScriptIds,
+    setCompletedScriptIds,
+  ] = useState(initialCompletedIds)
+
+  const [
+    selectedScript,
+    setSelectedScript,
+  ] = useState(() =>
+    chooseRandomScript(
+      initialCompletedIds,
+    ),
+  )
 
   const [promptOrder, setPromptOrder] =
     useState([])
@@ -140,7 +290,7 @@ function LostScriptsPage() {
   const [answers, setAnswers] =
     useState(() =>
       createEmptyAnswers(
-        lostScripts[0].prompts,
+        selectedScript.prompts,
       ),
     )
 
@@ -178,7 +328,8 @@ function LostScriptsPage() {
           (currentIndex) =>
             Math.min(
               currentIndex + 1,
-              RESTORING_MESSAGES.length - 1,
+              RESTORING_MESSAGES.length -
+                1,
             ),
         )
       }, 520)
@@ -208,20 +359,24 @@ function LostScriptsPage() {
     }
   }, [phase])
 
-  function beginSelectedScript() {
+  function resetScriptForm(script) {
     setAnswers(
       createEmptyAnswers(
-        selectedScript.prompts,
+        script.prompts,
       ),
     )
 
     setPromptOrder(
       shufflePrompts(
-        selectedScript.prompts,
+        script.prompts,
       ),
     )
 
     setFormError('')
+  }
+
+  function beginSelectedScript() {
+    resetScriptForm(selectedScript)
     setPhase(PHASES.FORM)
 
     window.scrollTo({
@@ -266,6 +421,56 @@ function LostScriptsPage() {
     })
   }
 
+  function selectNextScript({
+    markCurrentCompleted = false,
+    destinationPhase = PHASES.PICKER,
+  } = {}) {
+    let updatedCompletedIds = [
+      ...completedScriptIds,
+    ]
+
+    if (
+      markCurrentCompleted &&
+      !updatedCompletedIds.includes(
+        selectedScript.id,
+      )
+    ) {
+      updatedCompletedIds.push(
+        selectedScript.id,
+      )
+    }
+
+    if (
+      updatedCompletedIds.length >=
+      lostScripts.length
+    ) {
+      updatedCompletedIds = []
+    }
+
+    saveCompletedScriptIds(
+      updatedCompletedIds,
+    )
+
+    setCompletedScriptIds(
+      updatedCompletedIds,
+    )
+
+    const nextScript =
+      chooseRandomScript(
+        updatedCompletedIds,
+        selectedScript.id,
+      )
+
+    setSelectedScript(nextScript)
+    resetScriptForm(nextScript)
+    setPhase(destinationPhase)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+
   function returnToPicker() {
     setPhase(PHASES.PICKER)
     setFormError('')
@@ -276,26 +481,199 @@ function LostScriptsPage() {
     })
   }
 
+  function skipCurrentScript() {
+    selectNextScript({
+      markCurrentCompleted: true,
+      destinationPhase: PHASES.PICKER,
+    })
+  }
+
+  function returnAfterCompletedScript() {
+    selectNextScript({
+      markCurrentCompleted: true,
+      destinationPhase: PHASES.PICKER,
+    })
+  }
+
   function startAnotherScript() {
-    setAnswers(
-      createEmptyAnswers(
-        selectedScript.prompts,
-      ),
-    )
-
-    setPromptOrder(
-      shufflePrompts(
-        selectedScript.prompts,
-      ),
-    )
-
-    setFormError('')
+    resetScriptForm(selectedScript)
     setPhase(PHASES.FORM)
 
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     })
+  }
+
+  function downloadScriptPdf() {
+    const document = new jsPDF({
+      unit: 'mm',
+      format: 'letter',
+    })
+
+    const pageWidth =
+      document.internal.pageSize.getWidth()
+
+    const leftMargin = 18
+    const rightMargin = 18
+    const contentWidth =
+      pageWidth -
+      leftMargin -
+      rightMargin
+
+    document.setFont(
+      'helvetica',
+      'bold',
+    )
+    document.setFontSize(10)
+    document.text(
+      'PAUL’S CIGAR LOUNGE PRESENTS',
+      pageWidth / 2,
+      18,
+      {
+        align: 'center',
+      },
+    )
+
+    document.setFontSize(22)
+    document.text(
+      'LOST SCRIPTS',
+      pageWidth / 2,
+      29,
+      {
+        align: 'center',
+      },
+    )
+
+    document.setFontSize(15)
+    document.text(
+      selectedScript.title,
+      pageWidth / 2,
+      39,
+      {
+        align: 'center',
+      },
+    )
+
+    document.setFont(
+      'helvetica',
+      'normal',
+    )
+    document.setFontSize(10)
+    document.text(
+      `Recovered Script ${selectedScript.archiveNumber}`,
+      pageWidth / 2,
+      47,
+      {
+        align: 'center',
+      },
+    )
+
+    let y = 60
+
+    selectedScript.blocks.forEach(
+      (block) => {
+        const text = block.parts
+          ? partsToPlainText(
+              block.parts,
+              answers,
+            )
+          : block.text
+
+        if (
+          block.type ===
+          'scene-heading'
+        ) {
+          y += 3
+
+          const result =
+            addWrappedPdfText({
+              document,
+              text: text.toUpperCase(),
+              x: leftMargin,
+              y,
+              maxWidth: contentWidth,
+              fontSize: 11,
+              lineHeight: 6,
+              fontStyle: 'bold',
+            })
+
+          y = result.y + 2
+          return
+        }
+
+        if (
+          block.type ===
+          'stage-direction'
+        ) {
+          const result =
+            addWrappedPdfText({
+              document,
+              text,
+              x: leftMargin + 10,
+              y,
+              maxWidth:
+                contentWidth - 20,
+              fontSize: 10,
+              lineHeight: 5,
+              fontStyle: 'italic',
+            })
+
+          y = result.y + 2
+          return
+        }
+
+        if (
+          y >
+          document.internal.pageSize.getHeight() -
+            32
+        ) {
+          document.addPage()
+          y = 20
+        }
+
+        document.setFont(
+          'helvetica',
+          'bold',
+        )
+        document.setFontSize(10)
+        document.text(
+          block.speaker,
+          pageWidth / 2,
+          y,
+          {
+            align: 'center',
+          },
+        )
+
+        y += 5
+
+        const result =
+          addWrappedPdfText({
+            document,
+            text,
+            x: leftMargin + 28,
+            y,
+            maxWidth:
+              contentWidth - 56,
+            fontSize: 10,
+            lineHeight: 5,
+            fontStyle: 'normal',
+          })
+
+        y = result.y + 3
+      },
+    )
+
+    const safeTitle =
+      selectedScript.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+
+    document.save(
+      `${selectedScript.archiveNumber}-${safeTitle}.pdf`,
+    )
   }
 
   return (
@@ -317,8 +695,8 @@ function LostScriptsPage() {
             </h2>
 
             <p>
-              We recovered a damaged sitcom
-              script. Unfortunately, several
+              We recovered ten damaged sitcom
+              scripts. Unfortunately, several
               important words are missing.
             </p>
           </div>
@@ -361,8 +739,7 @@ function LostScriptsPage() {
               <button
                 className="lost-script-button lost-script-button--secondary"
                 type="button"
-                disabled
-                title="More recovered scripts are coming in the next build."
+                onClick={skipCurrentScript}
               >
                 <RefreshCw
                   aria-hidden="true"
@@ -375,9 +752,10 @@ function LostScriptsPage() {
           </article>
 
           <p className="lost-scripts-picker__progress">
-            One recovered script is available
-            during this build stage.
-          </p>
+  {lostScripts.length} lost scripts discovered.{' '}
+  {completedScriptIds.length} of{' '}
+  {lostScripts.length} completed.
+</p>
         </section>
       )}
 
@@ -639,8 +1017,23 @@ function LostScriptsPage() {
             </div>
 
             <footer className="lost-script-page__footer">
-              This script is comedy gold.
-              You’d better save it.
+              <p>
+                This script is comedy gold.
+                You’d better save it.
+              </p>
+
+              <button
+                className="lost-script-button lost-script-button--primary"
+                type="button"
+                onClick={downloadScriptPdf}
+              >
+                <Download
+                  aria-hidden="true"
+                  size={18}
+                />
+
+                Download Script PDF
+              </button>
             </footer>
           </article>
 
@@ -661,7 +1054,7 @@ function LostScriptsPage() {
             <button
               className="lost-script-button lost-script-button--secondary"
               type="button"
-              onClick={returnToPicker}
+              onClick={returnAfterCompletedScript}
             >
               <ArrowLeft
                 aria-hidden="true"
@@ -671,11 +1064,6 @@ function LostScriptsPage() {
               Return to Lost Scripts
             </button>
           </div>
-
-          <p className="lost-script-reveal__pdf-note">
-            PDF download will be added in the
-            next build stage.
-          </p>
         </section>
       )}
     </ActivityLayout>
