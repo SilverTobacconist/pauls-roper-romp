@@ -102,23 +102,6 @@ function formatConversationLabel(
   return `Conversation ${number}`;
 }
 
-function formatRevealDate(revealAt) {
-  if (!revealAt) {
-    return "7:00 PM";
-  }
-
-  const date = new Date(revealAt);
-
-  if (Number.isNaN(date.getTime())) {
-    return "7:00 PM";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(date);
-}
-
 function RoperRevealExperience() {
   const [revealResult, setRevealResult] =
     useState(null);
@@ -487,7 +470,7 @@ function RoperRevealExperience() {
         />
 
         <p className="activity-placeholder__label">
-          Come back tonight
+          Come back September 26
         </p>
 
         <h2>
@@ -497,13 +480,8 @@ function RoperRevealExperience() {
 
         <p>
           Every recording and final guess will
-          be revealed after{" "}
-          <strong>
-            {formatRevealDate(
-              revealResult?.reveal_at
-            )}
-          </strong>
-          .
+          be revealed after 7:00 p.m. on
+          September 26.
         </p>
       </section>
     );

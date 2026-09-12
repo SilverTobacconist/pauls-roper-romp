@@ -1,29 +1,8 @@
 import { Clock3, Film } from "lucide-react";
 
-function formatRevealTime(revealAt) {
-  if (!revealAt) {
-    return "7:00 PM";
-  }
-
-  const date = new Date(revealAt);
-
-  if (Number.isNaN(date.getTime())) {
-    return "7:00 PM";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(date);
-}
-
 function RoperReturnNotice({
-  revealAt,
   completed = false,
 }) {
-  const revealTime =
-    formatRevealTime(revealAt);
-
   return (
     <aside
       className={[
@@ -53,25 +32,23 @@ function RoperReturnNotice({
         <p className="roper-return-notice__label">
           {completed
             ? "Your part is complete"
-            : "Come back tonight"}
+            : "Come back September 26"}
         </p>
 
         <p className="roper-return-notice__message">
           {completed ? (
             <>
-              The complete misunderstanding
-              will be revealed after{" "}
-              <strong>{revealTime}</strong>.
-              Return to this website tonight to hear every
-              recording and see how the phrase
-              changed from beginning to end.
+              You have completed the
+              misunderstanding. Check back after
+              7:00 p.m. on September 26 to hear the
+              entire chain or start a new one!
             </>
           ) : (
             <>
-              Return to this website after{" "}
-              <strong>{revealTime}</strong> to
-              hear every recording and watch the
-              whole misunderstanding unfold.
+              Check back after 7:00 p.m. on
+              September 26 to hear every recording
+              and watch the whole misunderstanding
+              unfold.
             </>
           )}
         </p>

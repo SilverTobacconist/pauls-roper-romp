@@ -70,9 +70,13 @@ function getSavedMusicPreference() {
     return false
   }
 
-  return (
-    window.localStorage.getItem(MUSIC_ENABLED_KEY) === 'true'
+  const savedPreference = window.localStorage.getItem(
+    MUSIC_ENABLED_KEY,
   )
+
+  return savedPreference === null
+    ? true
+    : savedPreference === 'true'
 }
 
 function RadioPlayer() {
