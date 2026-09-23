@@ -7,10 +7,13 @@ import LostScriptsPage from './pages/activities/LostScriptsPage'
 import MrRoperHeardPage from './pages/activities/MrRoperHeardPage'
 import RentCalculatorPage from './pages/activities/RentCalculatorPage'
 import ReviewsPage from './pages/activities/ReviewsPage'
+import AdminPage from './pages/AdminPage'
+import RoperVisitTracker from './components/RoperVisitTracker'
 
 function App() {
   return (
     <>
+      <RoperVisitTracker />
       <Routes>
         <Route
           path="/"
@@ -36,6 +39,8 @@ function App() {
           path="/rent-calculator"
           element={<RentCalculatorPage />}
         />
+
+        <Route path="/admin" element={<AdminPage />} />
 
         <Route
           path="*"

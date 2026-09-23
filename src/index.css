@@ -58,6 +58,28 @@ img {
   min-height: 100vh;
 }
 
+.email-signup { display: grid; gap: 8px; width: min(100%, 620px); margin: 20px auto 0; padding: 16px; border: 1px solid rgba(255,244,214,.45); border-radius: 12px; background: rgba(36,17,9,.76); color: var(--cream); text-align: left; }
+.email-signup span, .email-signup label, .email-signup small { font-size: .85rem; }
+.email-signup__line { display: flex; gap: 8px; }
+.email-signup input[type="email"] { flex: 1; min-width: 0; padding: 10px; border: 0; border-radius: 6px; }
+.email-signup button, .admin-page button { border: 0; border-radius: 6px; padding: 10px 14px; background: var(--mustard); color: var(--brown-deep); cursor: pointer; font-weight: 700; }
+.visitor-count { margin: 10px 0 0; color: var(--cream-muted); font-size: .85rem; text-align: center; }
+.admin-page { min-height: 100vh; padding: 32px 16px; background: var(--brown-deep); color: var(--cream); overflow: auto; }
+.admin-card, .admin-dashboard { width: min(100%, 960px); margin: 0 auto; padding: 24px; border-radius: 12px; background: #512413; }
+.admin-card form { display: grid; gap: 12px; margin: 18px 0; }
+.admin-card input { padding: 12px; border-radius: 6px; border: 0; }
+.admin-dashboard > header { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.admin-dashboard > header > div:last-child { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-dashboard section { margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,244,214,.25); }
+.admin-warning { background: #c8632f !important; color: #fff4d6 !important; }
+.admin-review { margin: 12px 0; padding: 14px; border-radius: 8px; background: rgba(0,0,0,.16); }
+.admin-review span { display: block; color: var(--cream-muted); font-size: .9rem; margin-top: 4px; }
+.admin-review button { margin-right: 8px; }
+.admin-table > div, .subscriber-list > div { display: grid; grid-template-columns: minmax(0, 1fr) 100px 140px; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,244,214,.16); }
+.subscriber-list > div { grid-template-columns: minmax(0, 1fr) auto; }
+.admin-message { padding: 10px; border-radius: 6px; background: rgba(220,166,60,.2); }
+@media (max-width: 600px) { .email-signup__line { flex-direction: column; } .admin-dashboard > header { align-items: flex-start; flex-direction: column; } .admin-table > div { grid-template-columns: minmax(0,1fr) 65px 90px; } .subscriber-list > div { grid-template-columns: 1fr; } }
+
 /* =========================================================
    FULL-SCREEN APARTMENT SCENE
    ========================================================= */

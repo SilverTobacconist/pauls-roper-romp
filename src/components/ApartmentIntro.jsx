@@ -14,6 +14,8 @@ import closedDoor from '../assets/door-201-closed.png'
 import openDoor from '../assets/door-201-open.png'
 
 import { getRoperActivityState } from '../lib/roperService'
+import EmailSignup from './EmailSignup'
+import HomepageVisitorCount from './HomepageVisitorCount'
 
 const INTRO_STAGES = {
   CLOSED: 'closed',
@@ -377,6 +379,9 @@ function ApartmentIntro() {
             >
               Return to the Hallway
             </button>
+
+            <EmailSignup />
+            <HomepageVisitorCount />
           </section>
         )}
 
