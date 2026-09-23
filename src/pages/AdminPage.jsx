@@ -1,16 +1,22 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { forceRoperReveal, getAdminDashboard, moderateReview, requestAdminLink, signOutAdmin } from '../lib/roperAdmin'
+import { forceRoperReveal, getAdminDashboard, moderateReview, requestAdminLink, signOutAdmin, verifyAdminCode } from '../lib/roperAdmin'
 import { supabase } from '../lib/supabase'
 
 function Login() {
   const [email, setEmail] = useState('')
+  const [code, setCode] = useState('')
+  const [codeSent, setCodeSent] = useState(false)
   const [message, setMessage] = useState('')
   async function submit(event) {
     event.preventDefault()
-    try { await requestAdminLink(email); setMessage('Check your email for the secure admin link.') } catch (error) { setMessage(error.message) }
+    try { await requestAdminLink(email); setCodeSent(true); setMessage('Enter the verification code from your email.') } catch (error) { setMessage(error.message) }
   }
-  return <main className="admin-page"><section className="admin-card"><p>Apartment 201 Control Room</p><h1>Admin login</h1><form onSubmit={submit}><input type="email" required placeholder="Admin email" value={email} onChange={(event) => setEmail(event.target.value)} /><button>Send secure login link</button></form>{message && <small>{message}</small>}<Link to="/">Return to the public site</Link></section></main>
+  async function verify(event) {
+    event.preventDefault()
+    try { await verifyAdminCode(email, code); setMessage('Verified.  Opening the control room…') } catch (error) { setMessage(error.message) }
+  }
+  return <main className="admin-page"><section className="admin-card"><p>Apartment 201 Control Room</p><h1>Admin login</h1>{!codeSent ? <form onSubmit={submit}><input type="email" required placeholder="Admin email" value={email} onChange={(event) => setEmail(event.target.value)} /><button>Send verification code</button></form> : <form onSubmit={verify}><p>Code sent to {email}.</p><input inputMode="numeric" autoComplete="one-time-code" required placeholder="Verification code" value={code} onChange={(event) => setCode(event.target.value)} /><button>Verify and enter</button><button type="button" onClick={() => setCodeSent(false)}>Use a different email</button></form>}{message && <small>{message}</small>}<Link to="/">Return to the public site</Link></section></main>
 }
 
 function Dashboard({ data, refresh }) {

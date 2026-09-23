@@ -3,7 +3,16 @@ import { supabase } from './supabase'
 export async function requestAdminLink(email) {
   const { error } = await supabase.auth.signInWithOtp({
     email: email.trim(),
-    options: { emailRedirectTo: `${window.location.origin}/admin` },
+    options: { shouldCreateUser: false },
+  })
+  if (error) throw error
+}
+
+export async function verifyAdminCode(email, code) {
+  const { error } = await supabase.auth.verifyOtp({
+    email: email.trim(),
+    token: code.trim(),
+    type: 'email',
   })
   if (error) throw error
 }
